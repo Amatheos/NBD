@@ -1,0 +1,135 @@
+NBD Assignment 7 – RIAK
+On school VMs Riak starts automatically (single instance, port 8090). Solution should be sent as a single text file containing curl commands plus one text file containing server responses for each task (with headers, so use -i switch in curl)
+Add 5 documents to the database (use your s# number for bucket name), each document should be a json with 4 fields of at least two different types
+curl -i -XPUT -H "Content-Type: application/json" -d '{"name":"shoes", "price":12.3, "quantity":3, color":"black"}'  http://localhost:8098/buckets/s16539/keys/One
+
+curl -i -XPUT -H "Content-Type: application/json" -d '{"name":"glasses", "price":20.2, "quantity":4, color":"white"}'  http://localhost:8098/buckets/s16539/keys/Two
+
+curl  -i -XPUT -H "Content-Type: application/json" -d '{"name":"trousers", "price":39.1, "quantity":2, color":"blue"}'  http://localhost:8098/buckets/s16539/keys/Three
+
+curl  -i -XPUT -H "Content-Type: application/json" -d '{"name":"T-shirt", "price":25.8, "quantity":5, color":"yellow"}'  http://localhost:8098/buckets/s16539/keys/Four
+
+curl  -i -XPUT -H "Content-Type: application/json" -d '{"name":"socks", "price":3.5, "quantity":7, color":"red"}'  http://localhost:8098/buckets/s16539/keys/Five
+
+HTTP/1.1 204 No Content
+Vary: Accept-Encoding
+Server: MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)
+Date: Tue, 03 Dec 2019 18:06:17 GMT
+Content-Type: application/json
+Content-Length: 0
+
+HTTP/1.1 204 No Content
+Vary: Accept-Encoding
+Server: MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)
+Date: Tue, 03 Dec 2019 18:06:17 GMT
+Content-Type: application/json
+Content-Length: 0
+
+HTTP/1.1 204 No Content
+Vary: Accept-Encoding
+Server: MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)
+Date: Tue, 03 Dec 2019 18:06:17 GMT
+Content-Type: application/json
+Content-Length: 0
+
+HTTP/1.1 204 No Content
+Vary: Accept-Encoding
+Server: MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)
+Date: Tue, 03 Dec 2019 18:06:17 GMT
+Content-Type: application/json
+Content-Length: 0
+
+HTTP/1.1 204 No Content
+Vary: Accept-Encoding
+Server: MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)
+Date: Tue, 03 Dec 2019 18:06:17 GMT
+Content-Type: application/json
+Content-Length: 0
+
+Retrieve one of your documents from the db
+Curl -i http://localhost:8098/buckets/s16539/keys/One
+{"name":"shoes", "price":12.3, "quantity":3, color":"black"}
+HTTP/1.1 200 OK
+X-Riak-Vclock: a85hYGBgzGDKBVI8ypz/fsYwHX/CwKAumMGUKJjHyiCpEH2dLwsA
+Vary: Accept-Encoding
+Server: MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)
+Link: </buckets/s16539>; rel="up"
+Last-Modified: Tue, 03 Dec 2019 18:06:17 GMT
+ETag: "6U8oEpkUlaAoOt36ua3enV"
+Date: Tue, 03 Dec 2019 18:07:37 GMT
+Content-Type: application/json
+Content-Length: 60
+
+Modify one of your documents by adding a new field to the document
+curl -i -XPUT -H "Content-Type: application/json" -d '{"name":"shoes", "price":12.3, "quantity":3, color":"black", “size”:43}'  http://localhost:8098/buckets/s16539/keys/One
+HTTP/1.1 204 No Content
+Vary: Accept-Encoding
+Server: MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)
+Date: Tue, 03 Dec 2019 18:11:39 GMT
+Content-Type: application/json
+Content-Length: 0
+
+Modify one of your documents by deleting one field
+curl -i -XPUT -H "Content-Type: application/json" -d '{"name":"shoes", "price":12.3, "quantity":3, color":"black"}'  http://localhost:8098/buckets/s16539/keys/One
+HTTP/1.1 204 No Content
+Vary: Accept-Encoding
+Server: MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)
+Date: Tue, 03 Dec 2019 18:12:47 GMT
+Content-Type: application/json
+Content-Length: 0
+
+Modify one of your documents by changing the value of its fields
+curl -i -XPUT -H "Content-Type: application/json" -d '{"name":"shoes", "price":122.3, "quantity":333, color":"dark"}'  http://localhost:8098/buckets/s16539/keys/One
+HTTP/1.1 204 No Content
+Vary: Accept-Encoding
+Server: MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)
+Date: Tue, 03 Dec 2019 18:14:07 GMT
+Content-Type: application/json
+Content-Length: 0
+Remove one document from the db
+curl -i -XDELETE http://localhost:8098/buckets/s16539/keys/One
+HTTP/1.1 204 No Content
+Vary: Accept-Encoding
+Server: MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)
+Date: Tue, 03 Dec 2019 18:15:15 GMT
+Content-Type: application/json
+Content-Length: 0
+Try to retrieve non-existent document from the db
+curl -i http://localhost:8098/buckets/s16539/keys/One
+not found
+HTTP/1.1 404 Object Not Found
+Server: MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)
+Date: Tue, 03 Dec 2019 18:16:26 GMT
+Content-Type: text/plain
+Content-Length: 10
+Add one json document to the db without specifying key under which it should be stored
+curl -i -H "Content-Type: application/json" -d '{"name":"shoes", "price":12.3, "quantity":3, color":"black"}'  http://localhost:8098/buckets/s16539/keys
+HTTP/1.1 201 Created
+Vary: Accept-Encoding
+Server: MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)
+Location: /buckets/s16539/keys/9QszTCShVaP5ji9l7uqOoGI1lp
+Date: Wed, 04 Dec 2019 18:32:59 GMT
+Content-Type: application/json
+Content-Length: 0
+Retrieve document from task 8 from the db
+curl -i http://localhost:8098/buckets/s16539/keys/9QszTCShVaP5ji9l7uqOoGI1lp
+{"name":"shoes", "price":12.3, "quantity":3, color":"black"}
+HTTP/1.1 200 OK
+X-Riak-Vclock: a85hYGBgzGDKBVI8ypz/fsZw73JjYBQszGBKZMxjZbhdHnOdLwsA
+Vary: Accept-Encoding
+Server: MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)
+Link: </buckets/s16539>; rel="up"
+Last-Modified: Wed, 04 Dec 2019 18:32:59 GMT
+ETag: "1NAtAgEGRiRbZrDLHwUu3y"
+Date: Wed, 04 Dec 2019 18:38:14 GMT
+Content-Type: application/json
+Content-Length: 60
+
+Delete document from task 8 from the db
+curl -i -XDELETE http://localhost:8098/buckets/s16539/keys/9QszTCShVaP5ji9l7uqOoGI1lp
+HTTP/1.1 204 No Content
+Vary: Accept-Encoding
+Server: MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)
+Date: Wed, 04 Dec 2019 18:42:09 GMT
+Content-Type: application/json
+Content-Length: 0
