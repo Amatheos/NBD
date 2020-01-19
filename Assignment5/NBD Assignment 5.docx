@@ -1,0 +1,56 @@
+NBD Assignment 5 – Neo4J
+The assignment should be submitted as a text file with numbered queries + result files in text and image format (e.g. SVG and JSON – available export options change quite often) named resultX.svg and resultX.json (X – query number, extensions depend on available file formats, export image files where relevant). Export result files using web interface.
+	Run :play movie-graph command. Analyze and run sample queries.
+Build the following queries
+ 
+All movies
+Match(m:Movie) return m
+All movies in which Hugo Weaving played a role
+Match(h{name:"Hugo Weaving"}) return h
+Directors of movies in which Hugo Weaving played a role
+MATCH (h:Person {name:"Hugo Weaving"})-[:ACTED_IN]->(m)<-[:DIRECTED]-(d) RETURN DISTINCT d
+All actors playing in the same movies as Hugo Weaving 
+MATCH (h:Person {name:"Hugo Weaving"})-[:ACTED_IN]->(m)<-[:ACTED_IN]-(a) RETURN DISTINCT a
+All movies with actors starring in Matrix
+MATCH (m:Movie {title: "The Matrix"})<-[:ACTED_IN]-(a)-[:ACTED_IN]-> (mm) RETURN DISTINCT mm
+List of actors (actor = person playing in at least one movie) with amount of movies they played roles in 
+MATCH (p:Person)-[:ACTED_IN]->(m) with p,count(*) as amount WHERE amount>1 RETURN p,amount
+List of people who both wrote the screenplay and directed a movie, plus titles of such movies (screenwriter===director + movie title)
+MATCH(p)-[:WROTE]->(m)<-[:DIRECTED]-(p) RETURN p,m.title
+List of movies in which both Hugo Weaving and Keanu Reeves played a role
+MATCH (h {name:"Hugo Weaving"})-[:ACTED_IN]->(m)<-[:ACTED_IN]-( k {name:"Keanu Reeves"}) RETURN m
+Query or set of queries that will add Captain America:The First Avenger together with adding information about director, screenwriters and actors playing main roles. Use IMDB short info version http://www.imdb.com/title/tt0458339/ .
+CREATE (CA:Movie {title:'Captain America:The First Avenger', released:2011, tagline:'May the force be with captain'})
+CREATE (ChrisE:Person {name:'Chris Evans', born:1981})
+CREATE (HayleyA:Person {name:'Hayley Atwell', born:1982})
+CREATE (SebastianS:Person {name:'Sebastian Stan', born: 1982})
+CREATE (TommyLJ:Person {name:'Tommy Lee Jones', born:1946})
+CREATE (Hugo:Person {name:'Hugo Weaving', born:1960})
+CREATE (DominicC:Person {name:'Dominic Cooper', born:1978})
+CREATE (RichardA:Person {name:'Richard Armitage', born:1971})
+CREATE (StanleyT:Person {name:'Stanley Tucci', born:1960})
+CREATE (SamuelLJ:Person {name:'Samuel L. Jackson', born:1948})
+CREATE (JJ:Person {name:'Joe Johnston', born:1950})
+CREATE (ChristopherM:Person {name:'Christopher Markus', born:1970})
+CREATE (StephenM:Person {name:'Stephen McFeely', born:1969})
+CREATE (JS:Person {name:'Joe Simon', born:1913})
+CREATE (JK:Person {name:'Jack Kirby', born:1917})
+CREATE
+(ChrisE)-[:ACTED_IN {roles:['Captain America']}]->(CA),
+ (HayleyA)-[:ACTED_IN {roles:['Peggy Carter']}]->(CA),
+ (SebastianS)-[:ACTED_IN {roles:['James Buchanan \'Bucky\' Barnes']}]->(CA),
+(TommyLJ)-[:ACTED_IN {roles:['Colonel Chester Phillips']}]->(CA),
+(Hugo)-[:ACTED_IN {roles:['Red Skull']}]->(CA),
+ (DominicC)-[:ACTED_IN {roles:['Howard Stark']}]->(CA),
+ (RichardA)-[:ACTED_IN {roles:['Heinz Kruger']}]->(CA),
+(StanleyT)-[:ACTED_IN {roles:['Dr. Abraham Erskine']}]->(CA),
+(SamuelLJ)-[:ACTED_IN {roles:['Nick Fury']}]->(CA),
+ (JJ)-[:DIRECTED]->(CA),
+(ChristopherM)-[:WROTE]->(CA),
+(StephenM)-[:WROTE]->(CA),
+(JS)-[:WROTE]->(CA),
+(JK)-[:WROTE]->(CA)
+
+Query that shows all information added in Query 9 (movie, actors, director, screenwriter)
+MATCH (m:Movie {title:"Captain America:The First Avenger"})-[*1..4]-(all)
+RETURN DISTINCT all,m
